@@ -1,0 +1,112 @@
+{
+  "project_name": "Airlock",
+  "one_liner": "A household agent that pays your recurring bills on its own but can't be talked into the wrong one — prompt-injection-resistant by construction, on ASI:One.",
+  "team_name": "<Team name>",
+  "members": [
+    "<Name - role - email/GitHub>"
+  ],
+  "links": {
+    "asi1_shared_chat_url": "https://asi1.ai/shared-chat/<id>",
+    "github_repo_url": "https://github.com/<you>/airlock",
+    "demo_video_url": "https://youtu.be/<id>"
+  },
+  "agents": [
+    {
+      "name": "Airlock (orchestrator)",
+      "address": "agent1qvlcnk524vntglwps897gf0dst0ugzcznvwdsetpudpf2uuwrck9chp8hyh",
+      "profile_url": "https://agentverse.ai/agents/details/agent1qvlcnk524vntglwps897gf0dst0ugzcznvwdsetpudpf2uuwrck9chp8hyh/profile",
+      "protocols": "AgentChatProtocol 0.3.0, AgentPaymentProtocol 0.1.0 (seller)",
+      "role": "ASI:One-facing; owns the planner + deterministic gate + actor; chat, cards, payments"
+    },
+    {
+      "name": "Airlock Reader",
+      "address": "agent1qfta5ks9xw4ksj9jqhdhlyp8ulavnhg5agzkfdgep43g0mvgw23nz3ecqpx",
+      "profile_url": "https://agentverse.ai/agents/details/agent1qfta5ks9xw4ksj9jqhdhlyp8ulavnhg5agzkfdgep43g0mvgw23nz3ecqpx/profile",
+      "protocols": "AirlockReader 1.0.0",
+      "role": "The only component that touches raw untrusted content; parses inbox/email"
+    },
+    {
+      "name": "Airlock Bank",
+      "address": "agent1qwfmnsn4hykpj7k2ym2q4k8vq4fv3wry7hlyft8jewpec0ypn0eeqafqjpg",
+      "profile_url": "https://agentverse.ai/agents/details/agent1qwfmnsn4hykpj7k2ym2q4k8vq4fv3wry7hlyft8jewpec0ypn0eeqafqjpg/profile",
+      "protocols": "AirlockBank 1.0.0",
+      "role": "Accepts only typed, gate-approved actions and settles them"
+    }
+  ],
+  "problem": "Any AI agent that acts on your email is one well-worded message away from acting for an attacker: nothing in a normal build distinguishes 'the user asked for this' from 'an email told the agent to do this'. Prompt-level defences get bypassed by attackers who adapt to them. This is the exact shape of the real 'your bank details have changed, pay here instead' scam.",
+  "target_users": [
+    "Anyone who would let an agent pay routine bills but not hand it a blank cheque",
+    "Older or busy people targeted by payment-redirect scams",
+    "Fintech teams who want an autonomous payments agent they can defend"
+  ],
+  "outcome": [
+    "Pays routine bills that fall inside limits you authored (handled silently)",
+    "Holds anything suspicious as an approval card with the plain-English reason",
+    "Settles an approved bill in FET via the Payment Protocol when you tap Approve",
+    "Keeps a hash-chained audit log; ships a 7-attack red team with zero unauthorised effects"
+  ],
+  "architecture": "You (ASI:One) <-> Airlock orchestrator [Chat Protocol + Cards + Payment Protocol]. Reader agent supplies untrusted email text; the ASI:One LLM plans; a deterministic gate (never reads the email) decides ALLOW/ESCALATE/BLOCK; the Actor executes allowed actions; the Bank agent settles approved ones.",
+  "fetch_tech": [
+    "uAgents + Agentverse mailbox for all three agents",
+    "Agent Chat Protocol for ASI:One discoverability and interaction",
+    "ASI:One LLM used as the planner that reads untrusted content (and is never trusted by the gate)",
+    "ASI:One Interactive Cards: inbox summary, standing mandates, and an approve/decline review card per held decision",
+    "Agent Payment Protocol (seller): approved bills settle on-chain in FET (testnet by default)",
+    "Typed agent-to-agent protocols with send_and_receive, timeouts and local fallback"
+  ],
+  "reliability": [
+    [
+      "Planner (LLM) captured by an injection",
+      "The gate ignores the planner's reasoning; a captured planner changes nothing (attacks A1, A6)"
+    ],
+    [
+      "Reader or Bank agent offline",
+      "Orchestrator falls back to doing the step locally; the user still gets a reply"
+    ],
+    [
+      "ASI:One LLM down or no key",
+      "Planner falls back to a deterministic planner; the gate is unaffected"
+    ],
+    [
+      "Payment unverifiable on-chain",
+      "CancelPayment; nothing is settled; the decision stays open"
+    ],
+    [
+      "Guardrail flooding",
+      "The escalation queue deduplicates and, on overflow, locks down (stops acting, not asking)"
+    ]
+  ],
+  "monetisation": [
+    "Approved bills settle in FET via the Payment Protocol (a settlement fee in production)",
+    "The provenance-checked action boundary (Reader + gate) can be sold to other agents",
+    "A subscription for households wanting autonomous, bounded bill payment"
+  ],
+  "impact": "Autonomous bill-paying that is safe against the exact scam that targets real people. Seven adaptive attacks written against its own layers produce zero unauthorised effects, even when the planner is fully captured.",
+  "run_steps": "bash setup.sh (or setup.ps1) . add ASI1_API_KEY to .env . python scripts/demo_pipeline.py . python run_all.py . connect each agent's mailbox in the Agent Inspector",
+  "roadmap": [
+    "Real inbox (IMAP/Gmail) and a real banking/UPI rail behind the Bank agent",
+    "Per-user persisted store and mandates; a web console for mandates and the audit trail"
+  ],
+  "screenshots": [
+    {
+      "file": "docs/screenshots/1_inbox_summary.png",
+      "caption": "Run my inbox: two bills paid, two held"
+    },
+    {
+      "file": "docs/screenshots/2_review_card.png",
+      "caption": "An approval card with the plain-English reasons"
+    },
+    {
+      "file": "docs/screenshots/3_payment.png",
+      "caption": "Approving settles the bill in FET (Payment Protocol)"
+    },
+    {
+      "file": "docs/screenshots/4_injection_held.png",
+      "caption": "A direct injection email is held, not paid"
+    },
+    {
+      "file": "docs/screenshots/5_redteam.png",
+      "caption": "Red-team table: 7 attacks, 0 unauthorised effects"
+    }
+  ]
+}

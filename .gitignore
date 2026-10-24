@@ -1,0 +1,16 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*_data.json
+agent_storage/
+*.log
+
+*.sqlite3
+*.sqlite3-*
+quarantine/
+.venv-mac/
+__MACOSX/
+

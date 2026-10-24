@@ -1,0 +1,8 @@
+uagents==0.26.1
+uagents-core==0.4.12
+requests>=2.31
+python-dotenv>=1.0
+cosmpy>=0.12.1
+# dev / tests
+pytest>=8
+reportlab>=4.0   # only for scripts/make_submission_pdf.py
