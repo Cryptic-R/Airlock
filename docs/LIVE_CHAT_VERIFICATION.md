@@ -27,11 +27,15 @@ continues to fall back through the same schema and deterministic gate.
 Token payments remain disabled. No real bill was paid. The local agents require
 the machine and processes to remain running.
 
-## Submission still pending
+## Shared demonstration and submission status
 
-The chat URL is a private working conversation, not a verified public share:
-https://asi1.ai/chat/0c5a556c-3dc5-438c-aaaf-f4840217f508
+Shared demonstration (opened and verified in the signed-in browser; logged-out access still needs checking):
+https://asi1.ai/shared-chat/819f79da-1d6a-4805-97b6-b9e1942a774b
 
-Public share, demo video, team/member details and final submission confirmation
+The latest feature-branch run recorded two simulated bills and displayed the
+412.00 over-limit decision. Clicking Decline returned "Declined. I won't act on
+that one." Screenshot: `screenshots/live-decline-2026-10-31.png`.
+
+Demo video, team/member details and final submission confirmation
 are not yet supplied. The original checklist dates are in the past; eligibility
 or late submission must be verified with the event dashboard.
