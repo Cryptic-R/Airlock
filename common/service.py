@@ -18,7 +18,8 @@ _sessions: dict[str, Airlock] = {}
 
 
 def _planner():
-    return LLMPlanner(lambda messages: asi1.chat(messages, temperature=0, max_tokens=700))
+    return LLMPlanner(lambda messages: asi1.chat(messages, temperature=0, max_tokens=1500,
+                                               retries=0, timeout=20))
 
 
 def _fresh(user):

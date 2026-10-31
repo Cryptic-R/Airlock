@@ -61,7 +61,6 @@ async def _run_and_reply(ctx: Context, user: str, msgs: list[dict], intro: str) 
             await _settle(ctx, "pay_bill", h["receipt"])
     await ctx.send(user, cards.card_message("custom", cards.summary_card(summary),
                                             narration="Here's what Airlock did."))
-    for d in summary["decisions"]:
-        await ctx.send(user, cards.card_message("review", cards.review_card(d)))
+    # Keep decisions in the summary card; separate cards may be hidden by ASI:One.
     if not summary["decisions"]:
         await ctx.send(user, cards.text_message("Nothing needs you. All done."))

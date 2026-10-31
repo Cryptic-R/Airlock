@@ -124,7 +124,17 @@ def summary_card(s: dict) -> dict:
         children += [{"type": "divider"},
                      {"type": "heading", "level": 3, "value": "Waiting for you"},
                      {"type": "text", "style": "muted",
-                      "value": "I've opened a card for each. Approve or decline below."}]
+                      "value": "Review each held action below. These actions affect the demo ledger only."}]
+        for d in s["decisions"]:
+            children.append({"type": "section", "title": d["summary"], "children": [
+                {"type": "text", "value": " ".join(d["reasons"]), "style": "body"},
+                {"type": "group", "direction": "row", "gap": 8, "children": [
+                    {"type": "button", "label": "Approve", "primary": True,
+                     "action": {"selection": {"action": "approve", "sig": d["signature"]}}},
+                    {"type": "button", "label": "Decline",
+                     "action": {"selection": {"action": "decline", "sig": d["signature"]}}},
+                ]},
+            ]})
 
     if s["locked_down"]:
         children += [{"type": "divider"},

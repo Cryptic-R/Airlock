@@ -96,16 +96,28 @@ async def handle_selection(ctx: Context, user: str, sel: dict) -> bool:
         return True
     if action == "approve" and sel.get("sig"):
         await _approve(ctx, user, sel["sig"])
+        if not config.ENABLE_PAYMENTS:
+            await _refresh_decisions(ctx, user)
         return True
     if action == "decline" and sel.get("sig"):
         await asyncio.to_thread(service.decline, user, sel["sig"])
         await ctx.send(user, cards.text_message("Declined. I won't act on that one."))
+        await _refresh_decisions(ctx, user)
         return True
     if action == "reset":
         service.reset_lock(user)
         await ctx.send(user, cards.card_message("custom", cards.welcome_card(), narration="Fresh start."))
         return True
     return False
+
+
+async def _refresh_decisions(ctx: Context, user: str) -> None:
+    # A submitted custom card is disabled by ASI:One. Reissue the remaining
+    # choices after every decision so users can review more than one item.
+    summary = await asyncio.to_thread(service.run_messages, user, [])
+    if summary["decisions"]:
+        await ctx.send(user, cards.card_message("custom", cards.summary_card(summary),
+                                               narration="Remaining decisions:"))
 
 
 @chat_proto.on_message(ChatMessage)

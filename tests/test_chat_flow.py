@@ -88,13 +88,15 @@ def test_run_inbox_pays_routine_holds_suspicious():
     say(ctx, create_card_response_content(selection={"action": "run_inbox"}))
     ks = kinds(ctx.sent)
     assert "custom" in ks                      # summary card
-    assert ks.count("review") == 2             # two held decisions (water + bank-change)
+    assert len(service.open_decisions(USER)) == 2
     for kind, payload in payloads(ctx.sent):
         validate_card_payload(kind, payload)    # every card is schema-valid
     # the summary should show 2 bills paid
     summ = next(p for k, p in payloads(ctx.sent) if k == "custom")
     txt = json.dumps(summ)
     assert "2 bill(s) paid" in txt
+    assert txt.count('"label": "Approve"') == 2
+    assert txt.count('"label": "Decline"') == 2
 
 
 def test_approve_bank_change_executes_without_payment():
@@ -117,6 +119,21 @@ def test_decline_removes_decision():
     d = service.open_decisions(USER)[0]
     say(ctx, create_card_response_content(selection={"action": "decline", "sig": d["signature"]}))
     assert d["signature"] not in [x["signature"] for x in service.open_decisions(USER)]
+
+
+def test_decision_reissues_card_for_remaining_actions():
+    ctx = FakeCtx()
+    say(ctx, create_card_response_content(selection={"action": "run_inbox"}))
+    decisions = service.open_decisions(USER)
+    ctx.sent.clear()
+    say(ctx, create_card_response_content(selection={"action": "decline", "sig": decisions[0]["signature"]}))
+    remaining = service.open_decisions(USER)
+    assert len(remaining) == 1
+    refreshed = [p for k, p in payloads(ctx.sent) if k == "custom"]
+    assert len(refreshed) == 1
+    assert remaining[0]["signature"] in json.dumps(refreshed[0])
+    assert decisions[0]["signature"] not in json.dumps(refreshed[0])
+    validate_card_payload("custom", refreshed[0])
 
 
 def test_paste_injection_email_is_held_not_paid():
