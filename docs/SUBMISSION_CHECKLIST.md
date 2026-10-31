@@ -6,6 +6,8 @@
 
 ---
 
+> Current verification (31 October): see `LIVE_CHAT_VERIFICATION.md`. Event dates above are historical; final submission and eligibility have not been confirmed. The verified workflow uses simulated payments only.
+
 ## A. Mandatory requirements (all six, or no prize)
 
 | # | Requirement (from the challenge) | How the starter meets it | Verify before submitting |
@@ -13,8 +15,8 @@
 | 1 | Register at least one agent on Agentverse | All agents run with `mailbox=True`, `publish_agent_details=True` | Each agent's log shows "registered as mailbox agent"; each has a profile page on agentverse.ai |
 | 2 | Implement the Agent Chat Protocol (ACP) | `chat_protocol_spec` (AgentChatProtocol 0.3.0) with `publish_manifest=True` in `agents/orchestrator/chat.py` | Agentverse profile → Protocols tab lists *AgentChatProtocol* |
 | 3 | Discoverable and directly usable through ASI:One | Profile name/handle/README with keywords (`docs/agentverse_readmes/`), "Chat with Agent" opens it in ASI:One | Open ASI:One in a **fresh browser / incognito**, find Airlock, "Run my inbox" works |
-| 4 | Meaningful tool execution or multi-agent orchestration | Orchestrator runs the planner→gate→actor; Reader agent supplies untrusted input, Bank agent settles approved actions; Payment Protocol settles in FET | Terminal logs show ReadRequest/ExecRequest hops; summary + review cards appear |
-| 5 | Complete primary workflow entirely within an ASI:One conversation | Run inbox / paste email → summary card → one review (approve/decline) card per held decision → Payment Protocol on approve; no custom frontend | Do the whole flow once in ASI:One and **share that chat** |
+| 4 | Meaningful tool execution or multi-agent orchestration | Orchestrator runs the planner→gate→actor; Reader agent supplies untrusted input, Bank agent settles approved actions; Payment Protocol support is optional and disabled in the verified demo | Terminal logs show ReadRequest/ExecRequest hops; summary + review cards appear |
+| 5 | Complete primary workflow entirely within an ASI:One conversation | Run inbox / paste email → summary card → inline approve/decline decisions → simulated ledger receipt on approval; no custom frontend | Do the whole flow once in ASI:One and **share that chat** |
 | 6 | Public GitHub repository with instructions to run or test | README "Run it", `.env.example`, setup scripts, `pytest` (engine + red team + chat flow), `make demo` | Open the repo URL **logged out**; README renders; no `.env` or seeds committed |
 
 ## B. Deliverables (what you submit to the Project Submission Agent)
@@ -23,7 +25,7 @@
 |---|---|---|---|
 | 1 | **Public ASI:One Shared Chat URL** showing the complete workflow | In ASI:One, after the full demo chat → Share → copy public link | ☐ |
 | 2 | **Agentverse Agent Profile URL(s)** for **each** submitted agent | `python scripts/print_addresses.py` prints address + profile URL for each | ☐ ☐ ☐ |
-| 3 | **Public GitHub repository** | `https://github.com/<you>/<repo>` (public) | ☐ |
+| 3 | **Public GitHub repository** | `https://github.com/Cryptic-R/Airlock` (public) | ☐ |
 | 4 | **Short demo video** (hackpack: **3-5 minutes**) | Follow `docs/DEMO_SCRIPT.md`; upload to YouTube (Unlisted is fine) or Drive (anyone with link can view) | ☐ |
 | 5 | **Brief description**: problem, target users, outcome | `docs/PROJECT_DESCRIPTION.md` (ready to paste; Everyday Agents track) | ☐ |
 
@@ -44,8 +46,8 @@
 
 ## D. Bonus points the starter already covers
 - ✅ Multi-agent collaboration (3 agents, typed agent-to-agent protocols)
-- ✅ Payment Protocol settles approved bills in FET (credible: you pay the bill you approved)
-- ✅ ASI Interactive Cards (summary, mandates, and an approve/decline review card per decision)
+- ☐ Optional Payment Protocol integration exists; token payments are disabled and on-chain settlement is not verified.
+- ✅ ASI Interactive Cards (summary, mandates, and inline approve/decline decisions)
 - ✅ Reliability: retries, timeouts, local fallback, user-facing error cards, never-silent handler
 - ✅ Realistic household inbox incl. a live injection attempt; audit chain is tamper-evident
 - ✅ Can keep running after the hackathon (engine needs no external API; low cost)

@@ -7,7 +7,7 @@
   ],
   "links": {
     "asi1_shared_chat_url": "https://asi1.ai/shared-chat/<id>",
-    "github_repo_url": "https://github.com/<you>/airlock",
+    "github_repo_url": "https://github.com/Cryptic-R/Airlock",
     "demo_video_url": "https://youtu.be/<id>"
   },
   "agents": [
@@ -42,7 +42,7 @@
   "outcome": [
     "Pays routine bills that fall inside limits you authored (handled silently)",
     "Holds anything suspicious as an approval card with the plain-English reason",
-    "Settles an approved bill in FET via the Payment Protocol when you tap Approve",
+    "Records an approved bill in the simulated demo ledger when you tap Approve; no bank transfer is made",
     "Keeps a hash-chained audit log; ships a 7-attack red team with zero unauthorised effects"
   ],
   "architecture": "You (ASI:One) <-> Airlock orchestrator [Chat Protocol + Cards + Payment Protocol]. Reader agent supplies untrusted email text; the ASI:One LLM plans; a deterministic gate (never reads the email) decides ALLOW/ESCALATE/BLOCK; the Actor executes allowed actions; the Bank agent settles approved ones.",
@@ -51,7 +51,7 @@
     "Agent Chat Protocol for ASI:One discoverability and interaction",
     "ASI:One LLM used as the planner that reads untrusted content (and is never trusted by the gate)",
     "ASI:One Interactive Cards: inbox summary, standing mandates, and an approve/decline review card per held decision",
-    "Agent Payment Protocol (seller): approved bills settle on-chain in FET (testnet by default)",
+    "Optional Agent Payment Protocol (seller) integration; token payments are disabled and on-chain settlement is not verified",
     "Typed agent-to-agent protocols with send_and_receive, timeouts and local fallback"
   ],
   "reliability": [
